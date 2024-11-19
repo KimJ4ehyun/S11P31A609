@@ -167,7 +167,10 @@ public class AgentService {
             log.info("decision : {}", decision);
             log.info("percentage : {}", percentage);
 
-            BigDecimal averageBitcoinPrice = profitAssetService.getBTCAveragePrice(accessKey, secretKey);
+            BigDecimal averageBitcoinPrice = BigDecimal.ZERO;
+            if (decision.equals("SELL")) {
+                nowBitcoinPrice = profitAssetService.getBTCAveragePrice(accessKey, secretKey);
+            }
 
             // 매수, 매도 주문 처리
             boolean enoughAmount = true;
@@ -206,6 +209,11 @@ public class AgentService {
             if (enoughAmount && (decision.equals("SELL") || decision.equals("BUY"))) {
                 Thread.sleep(5000);
                 TransactionHistory transactionHistory = searchInvestmentHistory(accessKey, secretKey);
+
+                if (decision.equals("BUY")) {
+                    nowBitcoinPrice = profitAssetService.getBTCAveragePrice(accessKey, secretKey);
+                }
+
                 if (transactionHistory != null) {
                     transactionHistory.updateUser(user);
                     transactionHistory.updateSide(decision);
@@ -231,6 +239,7 @@ public class AgentService {
                     transactionHistoryRepository.save(transactionHistory);
                 }
             } else {
+                nowBitcoinPrice = profitAssetService.getBTCAveragePrice(accessKey, secretKey);
                 TransactionHistory transactionHistory = TransactionHistory.builder()
                         .user(user)
                         .agent(agent)
