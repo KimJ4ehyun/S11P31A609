@@ -26,9 +26,9 @@ const useCurrentPortfolio = () => {
     
         // formattedData 구성
         const formattedData = [
-            { id: '총 평가', value: (BTC/heldKRW)},
-            { id: '보유 KRW', value: (KRW/heldKRW)}
-        ]
+          { id: '총 평가', value: Math.floor(BTC / heldKRW) }, // 내림
+          { id: '보유 KRW', value: Math.floor(KRW / heldKRW) }, // 내림
+        ];
         setData(formattedData);
       })
       .catch((err) => {
